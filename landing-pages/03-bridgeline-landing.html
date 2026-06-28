@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bridgeline — stop re-keying data between your systems</title>
+<meta name="description" content="The data you re-key by hand every week — between your old system and your new one — synced automatically, with conflict handling and a safety net so nothing gets lost."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<!-- ANALYTICS: add your Plausible/other <script> here. Events fired: "Early access", "Pricing click", "Nav pricing". -->
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:"Hanken Grotesk",system-ui,sans-serif;font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 28px}
+  .mono{font-family:"Space Mono",monospace}.serif{font-family:"Fraunces",serif}
+  a{color:inherit}::selection{background:var(--accent);color:var(--ink)}
+  .eyebrow{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+  .nav{position:relative;z-index:3}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:22px 28px;max-width:1140px;margin:0 auto}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:19px;letter-spacing:-.01em;color:var(--paper)}
+  .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-glow)}
+  .nav .ghost{font-size:14px;font-weight:600;color:var(--paper);text-decoration:none;border:1px solid var(--line-on-ink);padding:9px 16px;border-radius:999px;transition:background .2s,border-color .2s}
+  .nav .ghost:hover{background:rgba(244,243,237,.08)}
+  .hero{background:var(--ink);color:var(--paper);position:relative;overflow:hidden;padding-bottom:78px}
+  .hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 88% -10%,var(--accent-glow),transparent 55%)}
+  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:54px;align-items:center;padding-top:34px;position:relative;z-index:2}
+  h1{font-family:"Fraunces",serif;font-weight:400;font-size:clamp(38px,5.6vw,66px);line-height:1.04;letter-spacing:-.02em;margin:20px 0 0}
+  h1 em{font-style:italic;color:var(--accent-bright)}
+  .lede{font-size:clamp(17px,2vw,20px);color:rgba(244,243,237,.82);max-width:36ch;margin-top:22px;line-height:1.5}
+  .form{margin-top:30px;display:flex;gap:10px;max-width:460px;flex-wrap:wrap}
+  .form input[type=email]{flex:1;min-width:210px;background:rgba(244,243,237,.07);border:1px solid var(--line-on-ink);color:var(--paper);padding:15px 16px;border-radius:12px;font-size:15px;font-family:inherit}
+  .form input[type=email]::placeholder{color:rgba(244,243,237,.5)}
+  .form input[type=email]:focus{outline:none;border-color:var(--accent);background:rgba(244,243,237,.1)}
+  .btn{background:var(--accent);color:var(--ink);border:none;font-family:inherit;font-weight:700;font-size:15px;padding:15px 22px;border-radius:12px;cursor:pointer;transition:transform .12s,background .2s;white-space:nowrap}
+  .btn:hover{background:var(--accent-bright);transform:translateY(-1px)}
+  .microcopy{font-size:13px;color:rgba(244,243,237,.6);margin-top:12px}
+  .form-success{margin-top:18px;font-size:15px;color:var(--accent-bright);font-weight:600;display:none}
+  .ticker{background:rgba(244,243,237,.04);border:1px solid var(--line-on-ink);border-radius:18px;padding:26px}
+  .ticker .lbl{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(244,243,237,.6)}
+  .ticker .big{font-family:"Space Mono",monospace;font-weight:700;font-size:clamp(32px,5vw,44px);color:var(--loss);margin-top:10px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .ticker .sub{font-size:13px;color:rgba(244,243,237,.55);margin-top:8px;line-height:1.5}
+  .ticker .live{display:flex;align-items:center;gap:8px;margin-top:20px;padding-top:18px;border-top:1px solid var(--line-on-ink);font-size:13px;color:rgba(244,243,237,.7)}
+  .ticker .live .pulse{width:8px;height:8px;border-radius:50%;background:var(--loss);animation:pulse 1.6s ease-in-out infinite}
+  .ticker .live .amt{margin-left:auto;font-family:"Space Mono",monospace;color:var(--loss);font-weight:700;font-variant-numeric:tabular-nums}
+  .hero-stat{text-align:left}
+  .hero-stat .sbig{font-family:"Fraunces",serif;font-size:clamp(54px,9vw,104px);line-height:.95;letter-spacing:-.03em;color:var(--accent-bright)}
+  .hero-stat .scap{color:rgba(244,243,237,.7);font-size:15px;margin-top:14px;max-width:32ch}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
+  section{padding:84px 0}
+  .calc{background:var(--paper);border-top:1px solid var(--line)}
+  .section-head{max-width:600px}
+  .section-head h2{font-family:"Fraunces",serif;font-weight:400;font-size:clamp(28px,4vw,42px);line-height:1.08;letter-spacing:-.02em;margin-top:12px}
+  .section-head p{color:var(--muted);margin-top:14px;font-size:16px}
+  .calc-card{margin-top:38px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:34px;display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center;box-shadow:0 24px 48px -32px rgba(17,30,28,.4)}
+  .calc-input label{display:block;font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .mrr-field{display:flex;align-items:center;gap:6px;margin-top:14px;border-bottom:2px solid var(--ink);padding-bottom:8px}
+  .mrr-field span{font-family:"Fraunces",serif;font-size:34px;color:var(--ink)}
+  .mrr-field input{border:none;background:none;font-family:"Fraunces",serif;font-size:40px;color:var(--ink);width:100%;padding:0}
+  .mrr-field input:focus{outline:none}
+  .slider{width:100%;margin-top:22px;accent-color:var(--accent);height:4px}
+  .calc-note{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.5}
+  .calc-out{border-left:1px solid var(--line);padding-left:34px}
+  .out-row+.out-row{margin-top:26px}
+  .out-row .k{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .out-row .v{font-family:"Space Mono",monospace;font-weight:700;font-size:clamp(28px,4.4vw,40px);letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
+  .v.loss{color:var(--loss)}.v.gain{color:var(--accent-deep)}
+  .out-row .per{font-size:13px;color:var(--muted);font-weight:400;letter-spacing:0;text-transform:none;font-family:"Hanken Grotesk",sans-serif}
+  .steps{background:var(--ink);color:var(--paper)}
+  .steps .eyebrow{color:var(--accent-bright)}.steps h2{color:var(--paper)}.steps p.intro{color:rgba(244,243,237,.7)}
+  .step-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:46px}
+  .step{border:1px solid var(--line-on-ink);border-radius:16px;padding:28px;background:rgba(244,243,237,.03)}
+  .step .num{font-family:"Space Mono",monospace;font-size:13px;color:var(--accent-bright);letter-spacing:.1em}
+  .step h3{font-family:"Fraunces",serif;font-weight:500;font-size:22px;margin-top:16px;line-height:1.15}
+  .step p{color:rgba(244,243,237,.72);font-size:15px;margin-top:10px;line-height:1.55}
+  .proof{background:var(--paper)}
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:44px}
+  .stat{border-top:2px solid var(--accent);padding-top:20px}
+  .stat .n{font-family:"Fraunces",serif;font-size:clamp(36px,5vw,52px);line-height:1;letter-spacing:-.02em}
+  .stat .d{color:var(--muted);font-size:15px;margin-top:12px;max-width:30ch}
+  .proof .caveat{font-size:13px;color:var(--muted);margin-top:30px;max-width:64ch}
+  .pricing{background:var(--ink);color:var(--paper)}
+  .pricing .eyebrow{color:var(--accent-bright)}.pricing h2{color:var(--paper)}.pricing .intro{color:rgba(244,243,237,.7);max-width:48ch}
+  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:46px}
+  .tier{border:1px solid var(--line-on-ink);border-radius:18px;padding:30px;background:rgba(244,243,237,.03);display:flex;flex-direction:column}
+  .tier.featured{border-color:var(--accent);background:var(--accent-tint)}
+  .tier .name{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-bright)}
+  .tier .amt{font-family:"Fraunces",serif;font-size:46px;margin-top:14px;letter-spacing:-.02em}
+  .tier .amt small{font-size:16px;color:rgba(244,243,237,.6);font-family:"Hanken Grotesk",sans-serif}
+  .tier ul{list-style:none;margin:20px 0 26px;display:flex;flex-direction:column;gap:11px}
+  .tier li{font-size:14.5px;color:rgba(244,243,237,.82);padding-left:24px;position:relative;line-height:1.45}
+  .tier li::before{content:"";position:absolute;left:0;top:7px;width:13px;height:8px;border-left:2px solid var(--accent);border-bottom:2px solid var(--accent);transform:rotate(-45deg)}
+  .tier .btn{margin-top:auto;width:100%;text-align:center;text-decoration:none}
+  .tier.featured .badge{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);background:var(--accent);display:inline-block;padding:3px 10px;border-radius:999px;margin-bottom:14px}
+  .founding{text-align:center;font-size:14px;color:rgba(244,243,237,.65);margin-top:28px}
+  .final{background:var(--paper);text-align:center}
+  .final h2{font-family:"Fraunces",serif;font-weight:400;font-size:clamp(30px,4.6vw,50px);line-height:1.05;letter-spacing:-.02em;max-width:20ch;margin:0 auto}
+  .final .form{margin:30px auto 0;justify-content:center}
+  .final input[type=email]{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .final input[type=email]::placeholder{color:var(--muted)}
+  .final .microcopy{color:var(--muted)}.final .form-success{color:var(--accent-deep)}
+  footer{background:var(--ink);color:rgba(244,243,237,.6);padding:30px 0;border-top:1px solid var(--line-on-ink)}
+  .foot-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;font-size:13px}
+  .foot-inner .brand{color:var(--paper);font-size:16px}
+  @media(max-width:860px){.hero-grid{grid-template-columns:1fr;gap:36px}.calc-card{grid-template-columns:1fr;gap:28px}.calc-out{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:28px}.step-grid,.stat-grid,.price-grid{grid-template-columns:1fr}section{padding:60px 0}}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style><style>:root{--ink:#10243A;--paper:#F4F3ED;--accent:#E07A2E;--accent-bright:#F39A50;--accent-deep:#B85C18;--accent-glow:rgba(224,122,46,.20);--accent-tint:rgba(224,122,46,.08);--loss:#BF4632;--muted:#5B6A65;--line:rgba(17,30,28,.12);--line-on-ink:rgba(244,243,237,.16);}</style>
+</head><body>
+<div class="hero"><nav class="nav"><div class="nav-inner">
+  <div class="brand"><span class="dot"></span>Bridgeline</div>
+  <a class="ghost" href="#pricing" data-track="nav-pricing">See pricing</a></div></nav>
+  <div class="wrap"><div class="hero-grid">
+    <div class="hero-copy"><span class="eyebrow">For ops teams stuck between two systems</span>
+      <h1>Make your <em>legacy</em> system talk to your modern one.</h1><p class="lede">The data you re-key by hand every week — between your old system and your new one — synced automatically, with conflict handling and a safety net so nothing gets lost.</p>
+      <form class="form" id="hero-form" novalidate>
+        <input type="email" name="email" placeholder="you@company.com" aria-label="Email address" required/>
+        <button class="btn" type="submit" data-track="early-access">Get early access</button></form>
+      <p class="microcopy">Book a 15-minute fit call. We'll tell you honestly if it's a match.</p>
+      <p class="form-success" id="hero-success">You're on the list. I'll email you the moment it's live.</p></div>
+    <div class="ticker"><div class="lbl">5 hours/week of manual entry costs, per year</div><div class="big mono" id="annual-loss">$0/ year</div><div class="sub">in loaded labor — before counting the errors that slip through when humans copy data by hand.</div><div class="live"><span class="pulse"></span> Slipping away since you opened this page<span class="amt" id="live-loss">$0.00</span></div></div>
+  </div></div></div>
+
+<section class="calc">
+  <div class="wrap">
+    <div class="section-head"><span class="eyebrow">The cost calculator</span>
+      <h2>What is manual data entry costing you?</h2><p>Drag in the hours your team spends moving data between systems each week.</p></div>
+    <div class="calc-card">
+      <div class="calc-input"><label for="mrr">Hours per week re-keying data</label>
+        <div class="mrr-field"><span></span>
+          <input id="mrr" class="mono" type="text" inputmode="numeric" value="5" aria-label="Hours per week re-keying data" /></div>
+        <input class="slider" id="mrr-slider" type="range" min="1" max="40" step="1" value="5" aria-label="Adjust value" />
+        <p class="calc-note">Assumes a ~$40/hour fully-loaded cost. The error-reduction upside is on top of this.</p></div>
+      <div class="calc-out">
+        <div class="out-row"><div class="k">Cost of manual data entry</div><div class="v loss mono" id="out-loss">$0 <span class="per">/ year</span></div></div>
+        <div class="out-row"><div class="k">What Bridgeline recovers</div><div class="v gain mono" id="out-gain">$0 <span class="per">/ year</span></div></div>
+      </div></div></div></section>
+<section class="steps"><div class="wrap">
+  <div class="section-head"><span class="eyebrow">How it works</span><h2>Connect once. It runs in the background.</h2>
+    <p class="intro">No replatforming, no rip-and-replace.</p></div>
+  <div class="step-grid"><div class="step"><div class="num">01</div><h3>Connect both systems</h3><p>Source and destination, with credentials encrypted. We support files, SFTP, and modern APIs.</p></div><div class="step"><div class="num">02</div><h3>Map your fields</h3><p>Tell Bridgeline how the two systems' data line up. Transforms handle the messy bits.</p></div><div class="step"><div class="num">03</div><h3>Sync on autopilot</h3><p>Scheduled or triggered syncs with idempotent upserts, retries, and a dead-letter queue you can replay.</p></div></div></div></section>
+<section class="proof"><div class="wrap">
+  <div class="section-head"><span class="eyebrow">Why it matters</span><h2>Integration gaps are the second-biggest SMB time sink.</h2></div>
+  <div class="stat-grid"><div class="stat"><div class="n serif">45%</div><div class="d">of mid-sized firms lose hours each week to manual data entry between tools</div></div><div class="stat"><div class="n serif">8 hrs</div><div class="d">a week per person can vanish when systems can't talk to legacy data</div></div><div class="stat"><div class="n serif">Zero loss</div><div class="d">idempotent upserts + dead-letter replay mean records are never silently dropped</div></div></div>
+  <p class="caveat">Figures are industry estimates, not promises about your account — which is exactly why this is worth testing on your real data.</p></div></section>
+<section class="pricing" id="pricing"><div class="wrap">
+  <div class="section-head"><span class="eyebrow">Pricing</span><h2>Cheaper than the hours it gives back.</h2>
+    <p class="intro">One reliable sync pays for itself in reclaimed time. Founding prices locked for life.</p></div>
+  <div class="price-grid"><div class="tier"><div class="name">Single</div><div class="amt">$99<small>/mo</small></div><ul><li>1 connection</li><li>Scheduled sync</li><li>Field mapping + transforms</li><li>Error dashboard</li></ul><a class="btn" href="#get" data-track="pricing-click" data-tier="single">Get early access</a></div><div class="tier featured"><span class="badge">Most popular</span><div class="name">Pro</div><div class="amt">$199<small>/mo</small></div><ul><li>5 connections</li><li>Triggered + scheduled sync</li><li>Dead-letter replay</li><li>Conflict review</li></ul><a class="btn" href="#get" data-track="pricing-click" data-tier="pro">Get early access</a></div><div class="tier"><div class="name">Business</div><div class="amt">$399<small>/mo</small></div><ul><li>Unlimited connections</li><li>Priority support</li><li>Custom connectors</li><li>Audit trail export</li></ul><a class="btn" href="#get" data-track="pricing-click" data-tier="business">Get early access</a></div></div>
+  <p class="founding">No charge today — early access reserves your founding price for launch.</p></div></section>
+<section class="final" id="get"><div class="wrap"><h2>Stop being the integration.</h2>
+  <form class="form" id="final-form" novalidate>
+    <input type="email" name="email" placeholder="you@company.com" aria-label="Email address" required/>
+    <button class="btn" type="submit" data-track="early-access">Get early access</button></form>
+  <p class="microcopy">Be first in line — and lock in the founding price.</p>
+  <p class="form-success" id="final-success">You're on the list. I'll email you the moment it's live.</p></div></section>
+<footer><div class="wrap foot-inner">
+  <div class="brand"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--accent);margin-right:8px"></span>Bridgeline</div>
+  <div>Built in public · launching soon · © 2026</div></div></footer>
+<script>var CFG={"exampleAnnual": 10400, "o1pre": "$", "o1suf": "/ year", "calc": {"def": 5, "min": 1, "max": 40, "f1": 2080, "f2": 0.85, "o1pre": "$", "o1suf": "/ year", "o2pre": "$", "o2suf": "/ year"}};
+(function(){"use strict";
+  var FORM_ENDPOINT = ""; // <-- paste Formspree URL or your /api/subscribe; "" = demo mode
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function track(name,props){try{if(window.plausible)window.plausible(name,props?{props:props}:undefined);}catch(e){}}
+  function fmt(n,pre,suf){return (pre||"")+Math.round(n).toLocaleString("en-US")+(suf||"");}
+  function countUp(el,to,pre,suf,dur){
+    if(reduceMotion){el.innerHTML=fmt(to,pre,suf);return;}
+    var s=performance.now(),from=0;dur=dur||800;
+    function t(now){var p=Math.min(1,(now-s)/dur),e=1-Math.pow(1-p,3);el.innerHTML=fmt(from+(to-from)*e,pre,suf);if(p<1)requestAnimationFrame(t);}
+    requestAnimationFrame(t);
+  }
+  // hero ticker
+  var al=document.getElementById("annual-loss");
+  if(al){countUp(al,CFG.exampleAnnual,CFG.o1pre,CFG.o1suf,1100);
+    var live=document.getElementById("live-loss");
+    if(live&&CFG.o1pre==="$"){var ps=CFG.exampleAnnual/(365*24*60*60),st=performance.now();
+      function lt(now){live.textContent="$"+(ps*((now-st)/1000)).toFixed(2);requestAnimationFrame(lt);}
+      if(!reduceMotion)requestAnimationFrame(lt);else live.textContent="$0.00";}
+  }
+  // calculator
+  var inp=document.getElementById("mrr"),sl=document.getElementById("mrr-slider"),
+      o1=document.getElementById("out-loss"),o2=document.getElementById("out-gain");
+  if(inp&&CFG.calc){
+    var C=CFG.calc;
+    function parse(v){var n=parseInt(String(v).replace(/[^0-9]/g,""),10);return isNaN(n)?0:n;}
+    function render(x,anim){var a=x*C.f1,b=a*C.f2;
+      if(anim){countUp(o1,a,C.o1pre,' <span class="per">'+C.o1suf+'</span>',600);countUp(o2,b,C.o2pre,' <span class="per">'+C.o2suf+'</span>',600);}
+      else{o1.innerHTML=fmt(a,C.o1pre,' <span class="per">'+C.o1suf+'</span>');o2.innerHTML=fmt(b,C.o2pre,' <span class="per">'+C.o2suf+'</span>');}}
+    inp.addEventListener("input",function(){var n=parse(inp.value);inp.value=n?n.toLocaleString("en-US"):"";if(n)sl.value=Math.max(C.min,Math.min(C.max,n));render(n,false);});
+    sl.addEventListener("input",function(){var n=parseInt(sl.value,10);inp.value=n.toLocaleString("en-US");render(n,false);});
+    render(C.def,true);
+  }
+  // tracked links
+  document.querySelectorAll("[data-track]").forEach(function(el){el.addEventListener("click",function(){
+    var n=el.getAttribute("data-track");
+    if(n==="pricing-click")track("Pricing click",{tier:el.getAttribute("data-tier")});
+    else if(n==="nav-pricing")track("Nav pricing");});});
+  // forms
+  function wire(fid,sid){var f=document.getElementById(fid),s=document.getElementById(sid);
+    f.addEventListener("submit",function(e){e.preventDefault();var i=f.querySelector("input[type=email]"),em=(i.value||"").trim();
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){i.focus();i.style.borderColor="var(--loss)";return;}
+      track("Early access",{source:fid});
+      function done(){f.style.display="none";s.style.display="block";}
+      if(!FORM_ENDPOINT){done();return;}
+      fetch(FORM_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({email:em,source:fid})}).then(done).catch(done);});}
+  wire("hero-form","hero-success");wire("final-form","final-success");
+})();
+</script>
+</body></html>
